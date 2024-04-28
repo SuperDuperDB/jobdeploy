@@ -86,6 +86,11 @@ class TemplateCaller:
     def _do_file(self, cf, method, on_up, runtime_defaults):
         content = self._get_content(cf['content'], runtime_defaults=runtime_defaults,
                                     on_up=on_up)
+        if content.startswith('file://'):
+            with open(content.split('file://')[-1]) as f:
+                content = f.read()
+                content = self._get_content(content, runtime_defaults=runtime_defaults,
+                                            on_up=on_up)
         log_content(content)
         path = f'{self.deploy_dir}/{method}'
         with open(path, 'w') as f:

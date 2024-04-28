@@ -13,9 +13,9 @@ def get_project():
     return os.getcwd().split('/')[-1]
 
 
-def prepare_params_for_resource(path, template, root, params):
+def prepare_params_for_resource(path, template, root, params, id=None):
     meta = {}
-    meta['id'] = random_id()
+    meta['id'] = id or random_id()
     meta['commit_up'] = os.popen('git rev-parse HEAD').read().split('\n')[0]
     msg = os.popen('git log -1 --pretty=%B').read().split('\n')[0]
     meta['message_up'] = '\n'.join([x.strip() for x in msg.split('\n') if x.strip()])
@@ -142,7 +142,7 @@ def build(path, method, id=None, root='', params=None, runtime=None, query=None)
         if method == 'up':
             if not os.path.exists(root + '.jd'):
                 os.makedirs(root + '.jd')
-            info = prepare_params_for_resource(path, template, root, params)
+            info = prepare_params_for_resource(path, template, root, params, id=id)
         else:
             jd_path = _get_jd_path(id)
             assert id is not None
